@@ -17,8 +17,9 @@ object Main {
 		val pwd = parser.getPwd()
 
 		val github = new Github(username, pwd)
-		val network = new GithubNetwork(1, github)
+		val network = new GithubNetwork(1, github, reporter)
 		network.InitNodes
 		network.InitEdges
+		network.draw
 	}
 }

@@ -12,23 +12,27 @@ class Github(username: String, pwd: String) {
 	val client = new GitHubClient()
 	client.setCredentials(username, pwd)
 	var userService = new UserService(client)
-	var me = userService.getUser
+	var me = new GithubUser(userService.getUser)
 
-	def getFollowers(login: String=""): List[User] = {
+	def getFollowers(login: String=""): List[GithubUser] = {
+		var list: List[User] = List()
 		if (login == "") {
-			userService.getFollowers.asScala.toList
+			list = userService.getFollowers.asScala.toList.asInstanceOf[List[GithubUser]]
 		}
 		else {
-			userService.getFollowers(login).asScala.toList
+			list = userService.getFollowers(login).asScala.toList.asInstanceOf[List[GithubUser]]
 		}
+		list.map( ele => new GithubUser(ele))
 	}
 
-	def getFollowees(login: String=""): List[User] = {
+	def getFollowees(login: String=""): List[GithubUser] = {
+		var list: List[User] = List()
 		if (login == "") {
-			userService.getFollowing.asScala.toList
+			list = userService.getFollowing.asScala.toList
 		}
 		else {
-			userService.getFollowing(login).asScala.toList
+			list = userService.getFollowing(login).asScala.toList
 		}
+		list.map( ele => new GithubUser(ele))
 	}
 }

@@ -13,21 +13,38 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import collection.mutable.{ HashMap, MultiMap, Set }
 
-class GithubNetwork(val level: Int = 1, github: Github) {
-	var nodes: Set[User] = Set()
-	var edges = new HashMap[User, Set[User]] with MultiMap[User, User]
+import utils.Grapher
+import utils.Reporters._
+
+class GithubNetwork(val level: Int = 1, github: Github, reporter: Reporter) {
+	var nodes: Set[GithubUser] = Set()
+	var edges = new HashMap[GithubUser, Set[GithubUser]] with MultiMap[GithubUser, GithubUser]
 	val system = ActorSystem("ActorSystem")
 
 	def InitNodes() = {
 		var count = level
 		nodes += github.me
-		while (count != 0) {
+		var workNodes: Set[GithubUser] = Set()
+		if (count != 0) {
 			for( node <- nodes) {
-				nodes ++= github.getFollowees(node.getLogin)
-				nodes ++= github.getFollowers(node.getLogin)
+				workNodes ++= github.getFollowees(node.getLogin)
+				workNodes ++= github.getFollowers(node.getLogin)
 			}
+			nodes ++= workNodes
 			count -= 1
 		}
+		while (count != 0) {
+			var nodesBuf: Set[GithubUser] = Set()
+			for( node <- workNodes) {
+				nodesBuf ++= github.getFollowees(node.getLogin)
+				nodesBuf ++= github.getFollowers(node.getLogin)
+			}
+			workNodes = nodesBuf
+			nodes ++= workNodes
+			count -= 1
+		}
+		// remove me 
+		nodes -= github.me
 	}
 
 	class WorkActor() extends Actor {
@@ -35,7 +52,7 @@ class GithubNetwork(val level: Int = 1, github: Github) {
 		def receive: Receive = {
 			case "recruit" => 
 			sender() ! "WorkDown"
-			case user: User => 
+			case user: GithubUser => 
 			log.info("Working on " + user.getLogin)
 			var followerList = github.getFollowers(user.getLogin)
 			var followeeList = github.getFollowees(user.getLogin)
@@ -87,8 +104,33 @@ class GithubNetwork(val level: Int = 1, github: Github) {
 	}
 
 	def InitEdges() = {
-		val sa = system.actorOf(Props(new SuperActor(4)), "SuperActor")
-		sa ! "begin"
-		println("End")
+		var counter = 0
+		var time = -1
+		for( user <- nodes) {
+			if (time != 0) {
+				time -= 1
+				reporter.info(counter.toString + ".parsing " + user.getLogin)
+				counter += 1
+				var followerList = github.getFollowers(user.getLogin)
+				var followeeList = github.getFollowees(user.getLogin)
+
+				for( follower <- followerList) {
+					if (nodes contains follower) {
+						edges.addBinding(follower, user)
+					}
+				}
+
+				for( followee <- followeeList) {
+					if (nodes contains followee) {
+						edges.addBinding(user, followee)
+					}
+				}
+			}
+		}
+	}
+
+	def draw() = {
+		val grapher = new Grapher(nodes, edges)
+		grapher.script
 	}
 }
