@@ -16,7 +16,12 @@ object Main {
 		val username = parser.getUsername()
 		val pwd = parser.getPwd()
 
-		val github = new Github(username, pwd)
+		var login = ""
+		if (args.length != 0) {
+			login = args(0)
+		}
+
+		val github = new Github(username, pwd, login)
 		val network = new GithubNetwork(1, github, reporter)
 		network.InitNodes
 		network.InitEdges

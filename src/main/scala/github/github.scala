@@ -8,16 +8,19 @@ import org.eclipse.egit.github.core.client.GitHubClient
 
 import scala.collection.JavaConverters._
 
-class Github(username: String, pwd: String) {
+class Github(username: String, pwd: String, userLogin: String = "") {
 	val client = new GitHubClient()
 	client.setCredentials(username, pwd)
 	var userService = new UserService(client)
 	var me = new GithubUser(userService.getUser)
+	if (userLogin != "") {
+		me = new GithubUser(userService.getUser(userLogin))
+	}
 
 	def getFollowers(login: String=""): List[GithubUser] = {
 		var list: List[User] = List()
 		if (login == "") {
-			list = userService.getFollowers.asScala.toList.asInstanceOf[List[GithubUser]]
+			list = userService.getFollowers(me.getLogin).asScala.toList.asInstanceOf[List[GithubUser]]
 		}
 		else {
 			list = userService.getFollowers(login).asScala.toList.asInstanceOf[List[GithubUser]]
@@ -28,7 +31,7 @@ class Github(username: String, pwd: String) {
 	def getFollowees(login: String=""): List[GithubUser] = {
 		var list: List[User] = List()
 		if (login == "") {
-			list = userService.getFollowing.asScala.toList
+			list = userService.getFollowing(me.getLogin).asScala.toList
 		}
 		else {
 			list = userService.getFollowing(login).asScala.toList
