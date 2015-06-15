@@ -21,7 +21,7 @@ In the picture, the login name of the user is `gaocegege`.And the command should
 Finally, you will get the `headless_simple.png & headless_simple.svg`
 
 <figure>
-	<img src="http://gaocegege.com/scala-github-relationship/example.png", height="300">
+	<img src="http://gaocegege.com/scala-github-relationship/example.png", height="400">
 </figure>
 
 The node in the graph represents a user, and a edge from A to B means A follows B. The color of the node depends on the degree, and the size of the node depends on the PageRank score.
