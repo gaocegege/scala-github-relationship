@@ -1,6 +1,6 @@
 # Scala-Github-Relationship
 
-A graphical view of the relationships between github follows.
+A graphical view of the relationships between github users.
 
 ## Usage
 
