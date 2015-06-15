@@ -11,7 +11,7 @@ First, the tool needs a account to get the higher rate limit in using Github API
 login name here is the username, not the email or else. For example
 
 <figure>
-	<img src="http://gaocegege.com/scala-github-relation/username.png", height="300">
+	<img src="http://gaocegege.com/scala-github-relationship/username.png", height="300">
 </figure>
 
 In the picture, the login name of the user is `gaocegege`.And the command should be `sbt "run-main Main gaocegege"`
@@ -21,7 +21,7 @@ In the picture, the login name of the user is `gaocegege`.And the command should
 Finally, you will get the `headless_simple.png & headless_simple.svg`
 
 <figure>
-	<img src="http://gaocegege.com/scala-github-relation/example.png", height="300">
+	<img src="http://gaocegege.com/scala-github-relationship/example.png", height="300">
 </figure>
 
 The node in the graph represents a user, and a edge from A to B means A follows B. The color of the node depends on the degree, and the size of the node depends on the PageRank score.
