@@ -193,19 +193,11 @@ class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[Git
         
         frame.pack()
         frame.setVisible(true)
-		//Export
-		// try { 
-			var ec = Lookup.getDefault().lookup(classOf[ExportController])
-			val pe = new PNGExporter
-			// pe.setHeight(height)
-			// pe.setWidth(width)
-			// pe.setMargin(0)
-			ec.exportFile(new File("headless_simple.png"), pe)
-			val ps = new SVGExporter
-			ec.exportFile(new File("headless_simple.svg"), ps)
-		// } catch {
-		//   case e: Exception => 
-		// }
+		var ec = Lookup.getDefault().lookup(classOf[ExportController])
+		val pe = new PNGExporter
+		ec.exportFile(new File("headless_simple.png"), pe)
+		val ps = new SVGExporter
+		ec.exportFile(new File("headless_simple.svg"), ps)
 
 	}
 }
