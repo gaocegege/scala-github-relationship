@@ -2,6 +2,12 @@
 
 A graphical view of the relationships between github users.
 
+## Environment
+
+* SBT 0.13.8
+* Java 1.6 or higher
+* Scala 2.11
+
 ## Usage
 
 First, the tool needs a account to get the higher rate limit in using Github API, so new a file named `userinfo.ini`, and the content of the file is the same as `userinfo.ini.example`. Then,
@@ -15,6 +21,8 @@ login name here is the username, not the email or else. For example
 </figure>
 
 In the picture, the login name of the user is `gaocegege`.And the command should be `sbt "run-main Main gaocegege"`
+
+PS: when run the command for the first time, it will takes some time to download the libraries.
 
 ## Output
 
