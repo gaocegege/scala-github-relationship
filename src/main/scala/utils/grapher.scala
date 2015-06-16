@@ -61,6 +61,7 @@ import processing.core.PApplet
 import collection.mutable.{ HashMap, MultiMap, Set }
 
 import github.GithubUser
+import utils.Reporters._
 
 /**
  * This demo shows several actions done with the toolkit, aiming to do a complete chain,
@@ -80,13 +81,14 @@ import github.GithubUser
  * 
  * @author Mathieu Bastian
  */
-class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[GithubUser]] with MultiMap[GithubUser, GithubUser]) {
+class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[GithubUser]] with MultiMap[GithubUser, GithubUser], reporter: Reporter) {
 	val minSize = 6
 	val maxSize = 20
 	val height = 1080
 	val width = 1920
 
 	def script(): Unit = {
+		reporter.info("Begin to draw")
 		//Init a project - and therefore a workspace
 		var pc = Lookup.getDefault().lookup(classOf[ProjectController])
 		pc.newProject()
@@ -151,6 +153,7 @@ class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[Git
 		rankingController.transform(centralityRanking,sizeTransformer)
 
 		// use layout
+		reporter.info("Run layout algorithm")
 		val layout = new YifanHuLayout(null, new StepDisplacement(1f))
 		layout.setGraphModel(graphModel)
 		layout.resetPropertiesValues()
@@ -158,11 +161,12 @@ class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[Git
 		layout.initAlgo()
 
 		var i = 0
-		while (i < 100 && layout.canAlgo()) {
+		while (i < 1000 && layout.canAlgo()) {
 			i = i + 1
 			layout.goAlgo()
 		}
 		layout.endAlgo()
+		reporter.info("End layout algorithm")
 
 		//Preview
 		model.getProperties.putValue(PreviewProperty.SHOW_EDGES, true)
@@ -185,7 +189,7 @@ class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[Git
         target.resetZoom()
 
         //Add the applet to a JFrame and display
-        var frame = new JFrame("Test Preview")
+        var frame = new JFrame("Github Follower and Followee")
         frame.setLayout(new BorderLayout())
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)

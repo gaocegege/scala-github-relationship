@@ -130,7 +130,7 @@ class GithubNetwork(val level: Int = 1, github: Github, reporter: Reporter) {
 	}
 
 	def draw() = {
-		val grapher = new Grapher(nodes, edges)
+		val grapher = new Grapher(nodes, edges, reporter)
 		grapher.script
 	}
 }
