@@ -12,6 +12,9 @@ A graphical view of the relationships between github users.
 
 First, the tool needs a account to get the higher rate limit in using Github API, so new a file named `userinfo.ini`, and the content of the file is the same as `userinfo.ini.example`. Then,
 
+	./bin/run.sh `login-name`
+or
+
 	sbt "run-main Main `login-name`"
 
 login name here is the username, not the email or else. For example
@@ -20,7 +23,7 @@ login name here is the username, not the email or else. For example
 	<img src="http://gaocegege.com/scala-github-relationship/username.png", height="300">
 </figure>
 
-In the picture, the login name of the user is `gaocegege`.And the command should be `sbt "run-main Main gaocegege"`
+In the picture, the login name of the user is `gaocegege`.
 
 PS: when run the command for the first time, it will takes some time to download the libraries.
 
