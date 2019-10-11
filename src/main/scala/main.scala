@@ -16,7 +16,7 @@ object Main {
 		val username = parser.getUsername()
 		val pwd = parser.getPwd()
 
-		var login = ""
+		var login = "gaocegege"
 		if (args.length != 0) {
 			login = args(0)
 		}

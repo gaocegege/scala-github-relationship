@@ -4,3 +4,6 @@ Output-Data.txt
 .java-version
 *.png
 *.svg
+.idea/
+project/
+.vscode/
