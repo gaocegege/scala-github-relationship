@@ -8,9 +8,13 @@ import org.eclipse.egit.github.core.client.GitHubClient
 
 import scala.collection.JavaConverters._
 
-class Github(username: String, pwd: String, userLogin: String = "") {
+class Github(username: String, pwd: String, token: String, userLogin: String = "") {
 	val client = new GitHubClient()
-	client.setCredentials(username, pwd)
+	if (pwd != "") {
+		client.setCredentials(username, pwd)
+	} else {
+		client.setOAuth2Token(token)
+	}
 	var userService = new UserService(client)
 	var me = new GithubUser(userService.getUser)
 	if (userLogin != "") {

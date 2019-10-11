@@ -15,16 +15,17 @@ object Main {
 		parser.run()
 		val username = parser.getUsername()
 		val pwd = parser.getPwd()
+		var token = parser.getToken()
 
 		var login = "gaocegege"
 		if (args.length != 0) {
 			login = args(0)
 		}
 
-		val github = new Github(username, pwd, login)
+		val github = new Github(username, pwd, token, login)
 		val network = new GithubNetwork(1, github, reporter)
 		network.InitNodes
-		network.InitEdges
+		network.InitEdgesWithActor(4)
 		network.draw
 	}
 }

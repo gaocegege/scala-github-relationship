@@ -8,6 +8,7 @@ import utils.Reporters._
 class Parser(filename: String, reporter: Reporter) {
 	var username: String = ""
 	var pwd: String = ""
+	var token: String = ""
 
 	class Context(filename: String) {
 		var ctx: ListBuffer[String] = ListBuffer()
@@ -44,8 +45,19 @@ class Parser(filename: String, reporter: Reporter) {
 			var pwdLine = context.ctx.head
 			context.ctx = context.ctx.tail
 
-			username = userLine.split("=")(1)
-			pwd = pwdLine.split("=")(1)
+			var tokenLine = context.ctx.head
+			context.ctx = context.ctx.tail
+
+			if (userLine.split("=").length > 1) {
+				username = userLine.split("=")(1)
+			}
+			if (pwdLine.split("=").length > 1) {
+				pwd = pwdLine.split("=")(1)
+
+			}
+			if (tokenLine.split("=").length > 1) {
+				token = tokenLine.split("=")(1)
+			}
 
 			reporter.info("Get the info of <" + username + ">")
 		}
@@ -58,22 +70,14 @@ class Parser(filename: String, reporter: Reporter) {
 	}
 
 	def getUsername(): String = {
-		if (username != "") {
-			return username
-		}
-		else {
-			reporter.error("username unknown")
-			return "-1"
-		}
+		return username
 	}
 
 	def getPwd(): String = {
-		if (pwd != "") {
-			return pwd
-		}
-		else {
-			reporter.error("pwd unknown")
-			return "-1"
-		}
+		return pwd
+	}
+
+	def getToken(): String = {
+		return token
 	}
 }

@@ -54,18 +54,24 @@ class GithubNetwork(val level: Int = 1, github: Github, reporter: Reporter) {
 			sender() ! "WorkDown"
 			case user: GithubUser => 
 			log.info("Working on " + user.getLogin)
-			var followerList = github.getFollowers(user.getLogin)
-			var followeeList = github.getFollowees(user.getLogin)
+			try {
+				var followerList = github.getFollowers(user.getLogin)
+				var followeeList = github.getFollowees(user.getLogin)
+				for( follower <- followerList) {
+					edges.addBinding(follower, user)
+				}
 
-			for( follower <- followerList) {
-				edges.addBinding(follower, user)
+				for( followee <- followeeList) {
+					edges.addBinding(user, followee)
+				}
+			} catch {
+				case ex: Exception => {
+					printf("Exception: %s\n", ex.getMessage)
+				}
+			} finally {
+				log.info("Work end on " + user.getLogin)
+				sender() ! "WorkDown"
 			}
-
-			for( followee <- followeeList) {
-				edges.addBinding(user, followee)
-			}
-			log.info("Work end on " + user.getLogin)
-			sender() ! "WorkDown"
 			case "Finish" =>
 			sender() ! "Finish"
 			context.stop(self)
@@ -86,9 +92,9 @@ class GithubNetwork(val level: Int = 1, github: Github, reporter: Reporter) {
 			case "begin" =>
 			for( actor <- actorList) {
 			 	actor ! "recruit"
-			 } 
+			 }
 			case "WorkDown" => 
-			if (!workNodes.isEmpty) {
+			if (workNodes.nonEmpty) {
 				sender() ! workNodes.head
 				workNodes = workNodes.tail
 			}
@@ -99,8 +105,15 @@ class GithubNetwork(val level: Int = 1, github: Github, reporter: Reporter) {
 			finishCount -= 1
 			if (finishCount == 0) {
 				context.stop(self)
+				system.terminate()
 			}
 		}
+	}
+
+	def InitEdgesWithActor(thread: Int) = {
+		var superAct = system.actorOf(Props(new SuperActor(thread)), "SuperActor")
+		superAct ! "begin"
+		system.awaitTermination()
 	}
 
 	def InitEdges() = {

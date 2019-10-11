@@ -22,27 +22,18 @@ package utils
 
 import java.awt.Color
 import java.io.File
-import java.io.IOException
 import java.awt.BorderLayout
 import javax.swing.JFrame
 import org.gephi.data.attributes.api.AttributeColumn
 import org.gephi.data.attributes.api.AttributeController
-import org.gephi.data.attributes.api.AttributeModel
 import org.gephi.filters.api.FilterController
-import org.gephi.filters.api.Query
 import org.gephi.filters.api.Range
 import org.gephi.filters.plugin.graph.DegreeRangeBuilder.DegreeRangeFilter
 import org.gephi.graph.api._
 import org.gephi.io.exporter.api.ExportController
-import org.gephi.io.importer.api.Container
-import org.gephi.io.importer.api.EdgeDefault
-import org.gephi.io.importer.api.ImportController
-import org.gephi.io.processor.plugin.DefaultProcessor
 import org.gephi.layout.plugin.force.StepDisplacement
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout
-import org.gephi.preview.types.EdgeColor
 import org.gephi.project.api.ProjectController
-import org.gephi.project.api.Workspace
 import org.gephi.ranking.api.Ranking
 import org.gephi.ranking.api.RankingController
 import org.gephi.ranking.api.Transformer
@@ -51,12 +42,7 @@ import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer
 import org.gephi.statistics.plugin.PageRank
 import org.openide.util.Lookup
 import org.gephi.io.exporter.preview._
-import org.gephi.io.importer.api.Container
-import org.gephi.io.importer.api.ImportController
-import org.gephi.io.processor.plugin.DefaultProcessor
 import org.gephi.preview.api._
-import org.gephi.preview.types.DependantOriginalColor
-import processing.core.PApplet
 
 import collection.mutable.{ HashMap, MultiMap, Set }
 
@@ -113,8 +99,10 @@ class Grapher(val nodes: Set[GithubUser], val edges: HashMap[GithubUser, Set[Git
 		}
 		for( (k, ele) <- edges) {
 			for( v <- ele) {
-				var e0 = graphModel.factory().newEdge(ghnodes(k), ghnodes(v), 1f, true)
-				directedGraph.addEdge(e0)
+				if (ghnodes.contains(k) && ghnodes.contains(v)) {
+					var e0 = graphModel.factory().newEdge(ghnodes(k), ghnodes(v), 1f, true)
+					directedGraph.addEdge(e0)
+				}
 			}
 		}
 
